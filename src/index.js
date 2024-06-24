@@ -1,22 +1,28 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var discord_js_1 = require("discord.js");
-var dotenv_1 = require("dotenv");
-dotenv_1.default.config();
-var client = new discord_js_1.Client({
-    intents: [
-        discord_js_1.GatewayIntentBits.Guilds,
-        discord_js_1.GatewayIntentBits.GuildMessages,
-        discord_js_1.GatewayIntentBits.GuildMessageReactions,
-        discord_js_1.GatewayIntentBits.MessageContent,
-    ],
+const { Client, Intents } = require('discord.js');
+const bot = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+
+
+const prefix = "Bot-Do!";
+
+bot.on("ready", () => {
+    console.log("online");
 });
-client.on("ready", function (e) {
-    console.log("bot is ready");
-});
-client.on("messageCreate", function (message) {
-    if (message.content === "bing") {
-        message.reply("bong");
+
+bot.on("messageCreate", async (message) => {
+    // تجاهل الرسائل التي يتم إرسالها بواسطة البوت نفسه
+    if (message.author.bot) return;
+
+    // التأكد من أن الرسالة تبدأ بالبادئة المحددة
+    if (!message.content.startsWith(prefix)) return;
+
+    // تقسيم الرسالة إلى الأوامر والمعاملات
+    const args = message.content.slice(prefix.length).trim().split(/ +/);
+    const command = args.shift().toLowerCase();
+
+    // التحقق من الأمر وتنفيذ الرد المناسب
+    if (command === "ping") {
+        message.reply("Pong");
     }
 });
-client.login(process.env.token);
+
+bot.login("")
